@@ -1,0 +1,33 @@
+#ifndef AUXILIAR_IDL
+#define AUXILIAR_IDL
+
+#include "scs.idl"
+
+module scs {
+  module auxiliar{
+    exception HelpInfoNotAvailable{};
+    exception UndefinedProperty{};
+    exception ReadOnlyProperty{};
+    exception InvalidProperty{ string reason; };
+
+    struct Property {
+      string name;
+      string value;
+      boolean read_only;
+    };
+    typedef sequence<Property> PropertySeq;
+
+    interface ComponentHelp {
+      string getHelpInfo (in core::ComponentId id)
+        raises (HelpInfoNotAvailable);
+    };
+
+    interface ComponentProperties {
+      void setProperty (in Property prop) raises (ReadOnlyProperty);
+      Property getProperty (in string name) raises (UndefinedProperty);
+      PropertySeq getProperties ();
+    };
+  };
+};
+
+#endif
