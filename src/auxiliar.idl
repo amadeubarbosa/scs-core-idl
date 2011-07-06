@@ -21,8 +21,11 @@ module scs {
      * if it's read-only or not.
      */
     struct Property {
+      /** \brief The name of the property. */
       string name;
+      /** \brief The value of the property. */
       string value;
+      /** \brief Indicates wether the property can be changed or not. */
       boolean read_only;
     };
     typedef sequence<Property> PropertySeq; /**< \brief A sequence of properties. */

@@ -138,7 +138,7 @@ module scs {
        * There cannot be more than one facet with the same name, so there's only one
        * possible return value.
        * 
-       * \param[in] facetName The facet name.
+       * \param[in] facet The facet name.
        * \return The CORBA object that represents the facet. If there's no facet
        *         with the specified interface, null is returned.
        */
