@@ -1,10 +1,16 @@
 #ifndef SCS_MEBRANE
 #define SCS_MEMBRANE
 
-#include <scs.idl>
+#include "scs.idl"
 
 module scs {
 	module composite{
+
+		typedef unsigned long MembershipId;
+		typedef sequence<MembershipId> MembershipIds;
+		typedef unsigned long BindingId;
+		typedef sequence<scs::core::ComponentId> ComponentsId;
+		typedef sequence<scs::core::IComponent> IComponentSeq;
 
 		exception ComponentAlreadyExistsInMembrane{};
 		exception ComponentIsNotIntoMembrane{};
@@ -13,14 +19,11 @@ module scs {
 		exception ComponentNotFound{ MembershipId id; };
 		exception FacetNotFound{};
 		exception FacetAlreadyExists{};
-		exception IncompatibleInterfaces{} // as interfaces não são compatíveis entre sim. Não é possível criar um conector.
+		exception IncompatibleInterfaces{}; // as interfaces não são compatíveis entre sim. Não é possível criar um conector.
 		exception ReceptacleNotFound{};
 		exception ReceptacleAlreadyExists{};
 		exception ComponentFailure{string msg; }; //erro genérico
 
-		typedef unsigned long MembershipId;
-		typedef sequence<MembershipId> MembershipIds;
-		typedef unsigned long BindingId;
 
     struct BindInformation {
       MembershipId id;
@@ -33,21 +36,21 @@ module scs {
 			/**
 			* \exception InvalidComponent O componente não possui a faceta ISuperComponent necessária.
 			*/
-			MembershipId addSubComponent(in IComponent obj) raises(InvalidComponent, ComponentFailure);
+			MembershipId addSubComponent(in scs::core::IComponent obj) raises(InvalidComponent, ComponentFailure);
 
 			void removeSubComponent(in MembershipId id); //Vale colocar um bool de retorno? ou exceção
 
-			ComponentsID getSubComponents();
+			ComponentsId getSubComponents();
 
-			IComponent findComponent(in MembershipId id) raises(ComponentNotFound, ComponentFailure);
+			scs::core::IComponent findComponent(in MembershipId id) raises(ComponentNotFound, ComponentFailure);
 
 			/**
 			* \brief Adiciona um ou mais componentes que serão responsáveis por executar uma faceta no componente composto.
 			* \remark A faceta criará um conector para simbolizar a faceta do componente composto
-			*/
+			
 			BindingId bindFacet2(in MembershipIDs subcomponents,in string internalFacetName,in string externalFacetName)
 					raises(InvalidComponent, FacetNotFound, FacetAlreadyExists, ComponentFailure);
-
+*/
 			/**
 			* \brief Adiciona uma faceta de um conector já existente que será representará uma faceta do componente composto.
 			*/
@@ -60,12 +63,12 @@ module scs {
 			* \brief Adiciona um ou mais componentes que serão responsáveis por executar uma receptáculo do componente composto.
 			* \remark A faceta criará um conector para simbolizar a receptáculo do componente composto.
 			*/
-			BindingId bindReceptacle(in MembershipIDs subcomponent,in string internalReceptacleName,in string externalReceptacleName);
+			BindingId bindReceptacle(in MembershipIds subcomponent,in string internalReceptacleName,in string externalReceptacleName)
 					raises(InvalidComponent, ReceptacleNotFound, ReceptacleAlreadyExists, ComponentFailure, IncompatibleInterfaces);
 
 			void unbindReceptacle(in BindingId id);//Vale colocar um bool de retorno? ou exceção
 
-			object getConnector(in BindingId id); //Procura um conector. Seria interessante que o conector tivesse uma interface. Assim poderíamos mandar um add facet to connector.
+			Object getConnector(in BindingId id); //Procura um conector. Seria interessante que o conector tivesse uma interface. Assim poderíamos mandar um add facet to connector.
 
 		}; interface ISuperComponent {
 
@@ -73,7 +76,7 @@ module scs {
 			 * \exception InvalidComponent O componente não possui a faceta ISuperComponent necessária ou
 			 * o método não recebeu a faceta IComponent como parâmetro.
 			*/
-			void addSuperComponent(in IComponent cmp) raises(InvalidComponent);
+			void addSuperComponent(in scs::core::IComponent cmp) raises(InvalidComponent);
 
 			/* Como comparar um ICompoent para conseguir remove-lo? */
 			void removeSuperComponent(in string cmp);
