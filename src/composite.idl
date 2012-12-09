@@ -9,7 +9,6 @@ module scs {
 		typedef unsigned long MembershipId;
 		typedef sequence<MembershipId> MembershipIds;
 		typedef unsigned long BindingId;
-		typedef sequence<scs::core::ComponentId> ComponentsId;
 		typedef sequence<scs::core::IComponent> IComponentSeq;
 
 		exception ComponentAlreadyExistsInMembrane{};
@@ -25,10 +24,17 @@ module scs {
 		exception ComponentFailure{string msg; }; //erro genérico
 
 
-    struct BindInformation {
-      MembershipId id;
-      string name;
-    };
+		struct BindInformation {
+			MembershipId id;
+			string name;
+		};
+
+		struct MembershipDescription{
+			MembershipId id;
+			scs::core::IComponent iComponent;
+		};
+		typedef sequence<MembershipDescription> MembershipDescriptionSeq;
+
 
 		interface IContentController {
 
@@ -38,9 +44,9 @@ module scs {
 			*/
 			MembershipId addSubComponent(in scs::core::IComponent obj) raises(InvalidComponent, ComponentFailure);
 
-			void removeSubComponent(in MembershipId id); //Vale colocar um bool de retorno? ou exceção
+			boolean removeSubComponent(in MembershipId id); //Vale colocar um bool de retorno? ou exceção
 
-			ComponentsId getSubComponents();
+			MembershipDescriptionSeq getSubComponents();
 
 			scs::core::IComponent findComponent(in MembershipId id) raises(ComponentNotFound, ComponentFailure);
 
