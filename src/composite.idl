@@ -59,11 +59,13 @@ module scs {
 */
 			/**
 			* \brief Adiciona uma faceta de um conector já existente que será representará uma faceta do componente composto.
+			  \param connectorType O tipo de conector que será utilizado. A interface padrão possui os seguintes tipos:
+		  	    replication, consensus e cooperation.
 			*/
-			BindingId bindFacet(in BindInformation internalFacetList, in string externalFacetName)
+			BindingId bindFacet(in BindInformation internalFacetList,in string connectorType , in string externalFacetName)
 					raises(InvalidComponent, FacetNotFound, FacetAlreadyExists, ComponentFailure);
 
-			void unbindFacet(in BindingId id); //Vale colocar um bool de retorno? ou exceção
+			boolean unbindFacet(in BindingId id); //Vale colocar um bool de retorno? ou exceção
 
 			/**
 			* \brief Adiciona um ou mais componentes que serão responsáveis por executar uma receptáculo do componente composto.
@@ -74,18 +76,16 @@ module scs {
 
 			void unbindReceptacle(in BindingId id);//Vale colocar um bool de retorno? ou exceção
 
-			Object getConnector(in BindingId id); //Procura um conector. Seria interessante que o conector tivesse uma interface. Assim poderíamos mandar um add facet to connector.
-
 		}; interface ISuperComponent {
 
 			/**
 			 * \exception InvalidComponent O componente não possui a faceta ISuperComponent necessária ou
 			 * o método não recebeu a faceta IComponent como parâmetro.
 			*/
-			void addSuperComponent(in scs::core::IComponent cmp) raises(InvalidComponent);
+			void addSuperComponent(in scs::core::IComponent iComponent) raises(InvalidComponent);
 
 			/* Como comparar um ICompoent para conseguir remove-lo? */
-			void removeSuperComponent(in string cmp);
+			boolean removeSuperComponent(in scs::core::IComponent iComponent);
 
 			IComponentSeq getSuperComponents();
 		};
