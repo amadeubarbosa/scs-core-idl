@@ -22,7 +22,7 @@ module scs {
 		exception ReceptacleNotFound{};
 		exception ReceptacleAlreadyExists{};
 		exception ComponentFailure{string msg; }; //erro genérico
-
+		exception UnknownConnectorType{};
 
 		struct BindInformation {
 			MembershipId id;
@@ -63,7 +63,7 @@ module scs {
 		  	    replication, consensus e cooperation.
 			*/
 			BindingId bindFacet(in BindInformation internalFacetList,in string connectorType , in string externalFacetName)
-					raises(InvalidComponent, FacetNotFound, FacetAlreadyExists, ComponentFailure);
+					raises(InvalidComponent, FacetNotFound, FacetAlreadyExists, ComponentFailure, UnknownConnectorType);
 
 			boolean unbindFacet(in BindingId id); //Vale colocar um bool de retorno? ou exceção
 
