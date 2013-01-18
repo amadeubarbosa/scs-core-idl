@@ -13,7 +13,7 @@ module scs {
 
 		exception ComponentAlreadyExistsInMembrane{};
 		exception ComponentIsNotIntoMembrane{};
-
+		exception UnshareableComponent{};
 		exception InvalidComponent{};
 		exception ComponentNotFound{ MembershipId id; };
 		exception FacetNotFound{};
@@ -42,7 +42,7 @@ module scs {
 			/**
 			* \exception InvalidComponent O componente não possui a faceta ISuperComponent necessária.
 			*/
-			MembershipId addSubComponent(in scs::core::IComponent obj) raises(InvalidComponent, ComponentFailure);
+			MembershipId addSubComponent(in scs::core::IComponent obj) raises(InvalidComponent, ComponentFailure, UnshareableComponent);
 
 			boolean removeSubComponent(in MembershipId id); //Vale colocar um bool de retorno? ou exceção
 
