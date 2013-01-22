@@ -17,6 +17,8 @@ module scs {
 
 		/** \brief O componente nao foi construido corretamente. */
 		exception InvalidComponent{};
+		/** \brief O componente possui receptaculo e ja faz parte de um componente composto. */
+		exception UnshareableComponent{};
 		/** \brief O Componente nao foi encontrado. */
 		exception ComponentNotFound{ 
 			MembershipId id; /**< \brief O Id que representa o componente. */
@@ -82,8 +84,10 @@ module scs {
 			* \exception InvalidComponent Caso o componente nao possua a faceta ISuperComponent necessaria.
 		 	*	
 			* \exception ComponentFailure Falha na operacao
+		 	*	
+			* \exception UnshareableComponent Caso o componente possua receptaculo e ja seja um subcomponente de um componente composto.
 			*/
-			MembershipId addSubComponent(in scs::core::IComponent icomponent) raises(InvalidComponent, ComponentFailure);
+			MembershipId addSubComponent(in scs::core::IComponent icomponent) raises(InvalidComponent, ComponentFailure, UnshareableComponent);
 
 			/**
 			* \brief Remove um subcomponente do componente composto.
@@ -170,7 +174,7 @@ module scs {
 		 	*	
 			* \exception UnknownConnectorType Caso o tipo de conector nao tenha sido implementado no componente composto.
 			*/
-			BindingId bindFacet(in BindingDescriptionSeq internalFacetList, in string connectorType , in string externalFacetName)
+			BindingId bindFacet(in BindingInformationSeq internalFacetList, in string connectorType , in string externalFacetName)
 					raises(ComponentNotFound, InvalidComponent, FacetNotFound, FacetAlreadyExists, ComponentFailure, UnknownConnectorType);
 
                         /**
@@ -218,7 +222,7 @@ module scs {
                         *       
                         * \exception UnknownConnectorType Caso o tipo de conector nao tenha sido implementado no componente composto.
                         */
-			BindingId bindReceptacle(in BindingDescriptionSeq internalReceptacleList,in string connectorType, in string externalReceptacleName)
+			BindingId bindReceptacle(in BindingInformationSeq internalReceptacleList,in string connectorType, in string externalReceptacleName)
 					raises(ComponentNotFound, InvalidComponent, ReceptacleNotFound, ReceptacleAlreadyExists, ComponentFailure, IncompatibleInterfaces);
 
                         /**
