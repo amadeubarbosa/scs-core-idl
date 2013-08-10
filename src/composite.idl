@@ -1,153 +1,153 @@
 #ifndef SCS_MEBRANE
 #define SCS_MEMBRANE
- 
+
 #include "scs.idl"
 
 module scs {
-	module composite{
-		
-		/** \brief O identificador que representa o componente no componente composto. */
-		typedef unsigned long MembershipId;
-		/** \brief Uma lista de MembershipIds. */
-		typedef sequence<MembershipId> MembershipIdSeq;
-		/** \brief O identificador que representa o binding do componente no componente composto. */
-		typedef unsigned long BindingId;
-		/** \brief Uma lista de IComponent. */
-		typedef sequence<scs::core::IComponent> IComponentSeq;
+  module composite{
 
-		/** \brief O componente nao foi construido corretamente. */
-		exception InvalidComponent{};
-		/** \brief O componente possui receptaculo e ja faz parte de um componente composto. */
-		exception UnshareableComponent{};
-		/** \brief O Componente nao foi encontrado. */
-		exception ComponentNotFound{ 
-			MembershipId id; /**< \brief O Id que representa o componente. */
-		};
-		/** \brief A faceta nao foi encontrada. */
-		exception FacetNotFound{};
-		/** \brief O componente ja possui a faceta definida. */
-		exception FacetAlreadyExists{};
-		/** \brief A interface nao e incompativel com as interface de entrada.*/
-		exception IncompatibleInterfaces{};
-		/** \brief O receptaculo nao foi encontrado.*/
-		exception ReceptacleNotFound{};
-		/** \brief O componente ja possui o receptaculo definido.*/
-		exception ReceptacleAlreadyExists{};
-		/** \brief Falha interna do componente.*/
-		exception ComponentFailure{
-			string msg; /**< \brief Mensagem com o detalhamento do erro.*/
-		};
+    /** \brief O identificador que representa o componente no componente composto. */
+    typedef unsigned long MembershipId;
+    /** \brief Uma lista de MembershipIds. */
+    typedef sequence<MembershipId> MembershipIdSeq;
+    /** \brief O identificador que representa o binding do componente no componente composto. */
+    typedef unsigned long BindingId;
+    /** \brief Uma lista de IComponent. */
+    typedef sequence<scs::core::IComponent> IComponentSeq;
 
-		/** \brief Estrutura de dados que representa um binding.*/
-		struct BindingInformation {
-			MembershipId id; /**< \brief Identificador do subcomponente.*/
-			string name; /**< \brief Nome da entidade do subcomponente que sera conectada.*/
-		};
-		typedef sequence<BindingInformation> BindingInformationSeq; /**< \brief Conjunto de BindingInformation */
+    /** \brief O componente nao foi construido corretamente. */
+    exception InvalidComponent{};
+    /** \brief O componente possui receptaculo e ja faz parte de um componente composto. */
+    exception UnshareableComponent{};
+    /** \brief O Componente nao foi encontrado. */
+    exception ComponentNotFound{
+      MembershipId id; /**< \brief O Id que representa o componente. */
+    };
+    /** \brief A faceta nao foi encontrada. */
+    exception FacetNotFound{};
+    /** \brief O componente ja possui a faceta definida. */
+    exception FacetAlreadyExists{};
+    /** \brief A interface nao e incompativel com as interface de entrada.*/
+    exception IncompatibleInterfaces{};
+    /** \brief O receptaculo nao foi encontrado.*/
+    exception ReceptacleNotFound{};
+    /** \brief O componente ja possui o receptaculo definido.*/
+    exception ReceptacleAlreadyExists{};
+    /** \brief Falha interna do componente.*/
+    exception ComponentFailure{
+      string msg; /**< \brief Mensagem com o detalhamento do erro.*/
+    };
 
-		/** \brief Descrição de conexoes.*/
-		struct BindingDescription{
-			BindingId id; /**< \brief Identificador da conexao entre o subcomponente e o componente composto. */
-			string name; /**< \brief Nome da faceta ou receptáculo */
-			boolean isFacet; /**< \brief True caso a conexao seja uma faceta, Falso caso seja um receptaculo */ 
-		};
-		typedef sequence<BindingDescription> BindingDescriptionSeq; /**< \brief Conjunto de BindingDescription */
+    /** \brief Estrutura de dados que representa um binding.*/
+    struct BindingInformation {
+      MembershipId id; /**< \brief Identificador do subcomponente.*/
+      string name; /**< \brief Nome da entidade do subcomponente que sera conectada.*/
+    };
+    typedef sequence<BindingInformation> BindingInformationSeq; /**< \brief Conjunto de BindingInformation */
 
-		/** \brief Descrição de subcomponentes.*/
-		struct MembershipDescription{
-			scs::core::IComponent icomponent; /**< \brief Um subcomponente do componente composto. */
-			MembershipId id; /**< \brief Identificador do subcomponente.*/
-		};
-		typedef sequence<MembershipDescription> MembershipDescriptionSeq;
+    /** \brief Descrição de conexoes.*/
+    struct BindingDescription{
+      BindingId id; /**< \brief Identificador da conexao entre o subcomponente e o componente composto. */
+      string name; /**< \brief Nome da faceta ou receptáculo */
+      boolean isFacet; /**< \brief True caso a conexao seja uma faceta, Falso caso seja um receptaculo */
+    };
+    typedef sequence<BindingDescription> BindingDescriptionSeq; /**< \brief Conjunto de BindingDescription */
 
-		/**
-		* \brief Interface que gerencia o componente composto, resposavel por: adicionar e remover subcomponentes; realizar e desfazer os bindings; inspecionar subcomponentes.
-		*/
-		interface IContentController {
+    /** \brief Descrição de subcomponentes.*/
+    struct MembershipDescription{
+      scs::core::IComponent icomponent; /**< \brief Um subcomponente do componente composto. */
+      MembershipId id; /**< \brief Identificador do subcomponente.*/
+    };
+    typedef sequence<MembershipDescription> MembershipDescriptionSeq;
 
-			/**
-			* \brief Fornece o identificador do componente composto.
-		 	*	
-			* \return O identificador do componente composto.
-			*/
-			string getId();
+    /**
+    * \brief Interface que gerencia o componente composto, resposavel por: adicionar e remover subcomponentes; realizar e desfazer os bindings; inspecionar subcomponentes.
+    */
+    interface IContentController {
 
-			/**
-			* \brief Adiciona um subcomponente no componente composto.
-			*
-			* \param [in] icomponent O componente que sera adicionado no componente composto
-		 	*	
-			* \return O identificador que representa o subcomponente no componente composto
-		 	*	
-			* \exception InvalidComponent Caso o componente nao possua a faceta ISuperComponent necessaria.
-		 	*	
-			* \exception ComponentFailure Falha na operacao
-		 	*	
-			* \exception UnshareableComponent Caso o componente possua receptaculo e ja seja um subcomponente de um componente composto.
-			*/
-			MembershipId addSubComponent(in scs::core::IComponent icomponent) raises(InvalidComponent, ComponentFailure, UnshareableComponent);
+      /**
+      * \brief Fornece o identificador do componente composto.
+      *
+      * \return O identificador do componente composto.
+      */
+      string getId();
 
-			/**
-			* \brief Remove um subcomponente do componente composto.
-			*
-			* \param [in] id O identificador que representa o subcomponente
-		 	*	
-			* \return True caso o componente seja removido com sucesso, False caso contrario
-		 	*	
-			* \exception
-			*/
-			boolean removeSubComponent(in MembershipId id); 
+      /**
+      * \brief Adiciona um subcomponente no componente composto.
+      *
+      * \param [in] icomponent O componente que sera adicionado no componente composto
+      *
+      * \return O identificador que representa o subcomponente no componente composto
+      *
+      * \exception InvalidComponent Caso o componente nao possua a faceta ISuperComponent necessaria.
+      *
+      * \exception ComponentFailure Falha na operacao
+      *
+      * \exception UnshareableComponent Caso o componente possua receptaculo e ja seja um subcomponente de um componente composto.
+      */
+      MembershipId addSubComponent(in scs::core::IComponent icomponent) raises(InvalidComponent, ComponentFailure, UnshareableComponent);
 
-			/**
-			* \brief Fornece todos os subcomponentes adicionados no componente composto.
-		 	*	
-			* \return Uma lista contendo todos os Ids e referencias para os subcomponentes
-			*/
-			MembershipDescriptionSeq getSubComponents();
+      /**
+      * \brief Remove um subcomponente do componente composto.
+      *
+      * \param [in] id O identificador que representa o subcomponente
+      *
+      * \return True caso o componente seja removido com sucesso, False caso contrario
+      *
+      * \exception
+      */
+      boolean removeSubComponent(in MembershipId id);
 
-			/**
-			* \brief Fornece todas as conexoes entre os subcomponentes e o componente composto
-		 	*	
-			* \return Uma lista contendo todos os Ids e referencias 
-			*/
-			BindingDescriptionSeq retrieveBindings();
+      /**
+      * \brief Fornece todos os subcomponentes adicionados no componente composto.
+      *
+      * \return Uma lista contendo todos os Ids e referencias para os subcomponentes
+      */
+      MembershipDescriptionSeq getSubComponents();
 
-			/**
-			* \brief Busca subcomponentes utilizando o identificador do mesmo no componente composto.
-			*
-			* \param [in] id O identificador que representa o subcomponente
-		 	*	
-			* \return A referencia para o subcomponente
-		 	*	
-			* \exception ComponentNotFound Caso id nao seja valido.
-		 	*	
-			* \exception ComponentFailure Falha na operacao
-			*/
-			scs::core::IComponent findComponent(in MembershipId id) raises(ComponentNotFound, ComponentFailure);
+      /**
+      * \brief Fornece todas as conexoes entre os subcomponentes e o componente composto
+      *
+      * \return Uma lista contendo todos os Ids e referencias
+      */
+      BindingDescriptionSeq retrieveBindings();
 
-			/**
-			* \brief Cria uma conexao de uma faceta do conector
-			*
-			* \param [in] connector O identficador do conector no componente composto.
-			*
-			* \param [in] internalFacetName O nome da faceta do conector que sera exportada.
-			*
-			* \param [in] externalFacetName O nome da nova faceta do componente composto.
-		 	*	
-			* \return O identificador da conexao. 
-		 	*	
-			* \exception ComponentNotFound Caso id nao seja valido.
-		 	*	
-			* \exception InvalidComponent Caso o componente nao implemente uma operacao corretamente
-		 	*	
-			* \exception FacetNotFound Caso a faceta do conector nao seja encontrada
-		 	*	
-			* \exception FacetAlreadyExists Caso ja exista uma faceta com o mesmo nome no subcomponente
-		 	*	
-			* \exception ComponentFailure Falha na operacao
-			*/	
-			BindingId bindFacet(in MembershipId connector, in string internalFacetName, in string externalFacetName)
-					raises(ComponentNotFound, InvalidComponent, FacetNotFound, FacetAlreadyExists, ComponentFailure);
+      /**
+      * \brief Busca subcomponentes utilizando o identificador do mesmo no componente composto.
+      *
+      * \param [in] id O identificador que representa o subcomponente
+      *
+      * \return A referencia para o subcomponente
+      *
+      * \exception ComponentNotFound Caso id nao seja valido.
+      *
+      * \exception ComponentFailure Falha na operacao
+      */
+      scs::core::IComponent findComponent(in MembershipId id) raises(ComponentNotFound, ComponentFailure);
+
+      /**
+      * \brief Cria uma conexao de uma faceta do conector
+      *
+      * \param [in] connector O identficador do conector no componente composto.
+      *
+      * \param [in] internalFacetName O nome da faceta do conector que sera exportada.
+      *
+      * \param [in] externalFacetName O nome da nova faceta do componente composto.
+      *
+      * \return O identificador da conexao.
+      *
+      * \exception ComponentNotFound Caso id nao seja valido.
+      *
+      * \exception InvalidComponent Caso o componente nao implemente uma operacao corretamente
+      *
+      * \exception FacetNotFound Caso a faceta do conector nao seja encontrada
+      *
+      * \exception FacetAlreadyExists Caso ja exista uma faceta com o mesmo nome no subcomponente
+      *
+      * \exception ComponentFailure Falha na operacao
+      */
+      BindingId bindFacet(in MembershipId connector, in string internalFacetName, in string externalFacetName)
+          raises(ComponentNotFound, InvalidComponent, FacetNotFound, FacetAlreadyExists, ComponentFailure);
 
                         /**
                         * \brief Cria uma conexao de um receptaculo do conector
@@ -157,58 +157,58 @@ module scs {
                         * \param [in] internalReceptacleName O nome do receptaculo do conector que sera exportado.
                         *
                         * \param [in] externalReceptacleName O nome do novo receptaculo do componente composto.
-                        *       
+                        *
                         * \return O identificador da conexao.
-                        *       
+                        *
                         * \exception ComponentNotFound Caso id nao seja valido.
-                        *       
-			* \exception InvalidComponent Caso o componente nao possua uma operacao corretamente
-                        *       
+                        *
+      * \exception InvalidComponent Caso o componente nao possua uma operacao corretamente
+                        *
                         * \exception ReceptacleAlreadyExists Caso ja exista um receptaculo com o mesmo nome no subcomponente
-                        *       
-			* \exception ComponentFailure Falha na operacao
+                        *
+      * \exception ComponentFailure Falha na operacao
                         */
-			BindingId bindReceptacle(in MembershipId connector, in string internalReceptacleName, in string externalReceptacleName)
-					raises(ComponentNotFound, InvalidComponent, ReceptacleNotFound, ReceptacleAlreadyExists, ComponentFailure);
+      BindingId bindReceptacle(in MembershipId connector, in string internalReceptacleName, in string externalReceptacleName)
+          raises(ComponentNotFound, InvalidComponent, ReceptacleNotFound, ReceptacleAlreadyExists, ComponentFailure);
 
                         /**
                         * \brief Desfaz uma conexao criada
                         *
                         * \param [in] id Identificado da conexao
-                        *       
+                        *
                         * \return True caso a conexao tenha sido desfeita com sucesso, False caso contrario.
                         */
-			void unbind(in BindingId id);
+      void unbind(in BindingId id);
 
-		}; interface ISuperComponent {
+    }; interface ISuperComponent {
 
-			/**
-			* \brief Adiciona a referencia do componente composto pai ao subcomponente. Essa operacao deve ser chamada de forma automatica pela operacao addSubCompoent da faceta IContentController.
-			*
-			* \param [in] icomponent O componente que sera adicionado no componente composto
-		 	*	
-			* \exception InvalidComponent Caso o componente nao implemente uma operacao corretamente
-			*/
-			void addSuperComponent(in scs::core::IComponent icomponent) raises(InvalidComponent);
+      /**
+      * \brief Adiciona a referencia do componente composto pai ao subcomponente. Essa operacao deve ser chamada de forma automatica pela operacao addSubCompoent da faceta IContentController.
+      *
+      * \param [in] icomponent O componente que sera adicionado no componente composto
+      *
+      * \exception InvalidComponent Caso o componente nao implemente uma operacao corretamente
+      */
+      void addSuperComponent(in scs::core::IComponent icomponent) raises(InvalidComponent);
 
-			/**
-			* \brief Remove a referencia do componente composto.
-			*
-			* \param [in] icomponent O componente que sera adicionado no componente composto
-		 	*	
-			* \return True caso o componente composto tenha sido removido, False cason contrario.
-		 	*	
-			*/
-			boolean removeSuperComponent(in scs::core::IComponent iComponent);
+      /**
+      * \brief Remove a referencia do componente composto.
+      *
+      * \param [in] icomponent O componente que sera adicionado no componente composto
+      *
+      * \return True caso o componente composto tenha sido removido, False cason contrario.
+      *
+      */
+      boolean removeSuperComponent(in scs::core::IComponent iComponent);
 
-			/**
-			* \brief Fornece os componentes compostos no qual o subcomponente em questao faz parte.
-		 	*	
-			* \return Uma lista com todas as referencias para os componentes compostos.
-			*/
-			IComponentSeq getSuperComponents();
-		};
-	};
+      /**
+      * \brief Fornece os componentes compostos no qual o subcomponente em questao faz parte.
+      *
+      * \return Uma lista com todas as referencias para os componentes compostos.
+      */
+      IComponentSeq getSuperComponents();
+    };
+  };
 };
 
 #endif
