@@ -60,6 +60,11 @@ module scs {
     };
     typedef sequence<MembershipDescription> MembershipDescriptionSeq;
 
+    enum Permission {
+      CURRENT,
+      ALL
+    };
+
     /**
     * \brief Interface que gerencia o componente composto, resposavel por: adicionar e remover subcomponentes; realizar e desfazer os bindings; inspecionar subcomponentes.
     */
@@ -149,35 +154,37 @@ module scs {
       BindingId bindFacet(in MembershipId connector, in string internalFacetName, in string externalFacetName)
           raises(ComponentNotFound, InvalidComponent, FacetNotFound, FacetAlreadyExists, ComponentFailure);
 
-                        /**
-                        * \brief Cria uma conexao de um receptaculo do conector
-                        *
-                        * \param [in] connector O identficador do conector no componente composto.
-                        *
-                        * \param [in] internalReceptacleName O nome do receptaculo do conector que sera exportado.
-                        *
-                        * \param [in] externalReceptacleName O nome do novo receptaculo do componente composto.
-                        *
-                        * \return O identificador da conexao.
-                        *
-                        * \exception ComponentNotFound Caso id nao seja valido.
-                        *
+      /**
+      * \brief Cria uma conexao de um receptaculo do conector
+      *
+      * \param [in] connector O identficador do conector no componente composto.
+      *
+      * \param [in] internalReceptacleName O nome do receptaculo do conector que sera exportado.
+      *
+      * \param [in] externalReceptacleName O nome do novo receptaculo do componente composto.
+      *
+      * \param [in] componentPermission A permissão de visibilidade do subcompente para com os componentes conectados ao bind.
+      *
+      * \return O identificador da conexao.
+      *
+      * \exception ComponentNotFound Caso id nao seja valido.
+      *
       * \exception InvalidComponent Caso o componente nao possua uma operacao corretamente
-                        *
-                        * \exception ReceptacleAlreadyExists Caso ja exista um receptaculo com o mesmo nome no subcomponente
-                        *
+      *
+      * \exception ReceptacleAlreadyExists Caso ja exista um receptaculo com o mesmo nome no subcomponente
+      *
       * \exception ComponentFailure Falha na operacao
-                        */
-      BindingId bindReceptacle(in MembershipId connector, in string internalReceptacleName, in string externalReceptacleName)
+      */
+      BindingId bindReceptacle(in MembershipId connector, in string internalReceptacleName, in string externalReceptacleName, in Permission componentPermission)
           raises(ComponentNotFound, InvalidComponent, ReceptacleNotFound, ReceptacleAlreadyExists, ComponentFailure);
 
-                        /**
-                        * \brief Desfaz uma conexao criada
-                        *
-                        * \param [in] id Identificado da conexao
-                        *
-                        * \return True caso a conexao tenha sido desfeita com sucesso, False caso contrario.
-                        */
+      /**
+      * \brief Desfaz uma conexao criada
+      *
+      * \param [in] id Identificado da conexao
+      *
+      * \return True caso a conexao tenha sido desfeita com sucesso, False caso contrario.
+      */
       void unbind(in BindingId id);
 
     }; interface ISuperComponent {
